@@ -1,42 +1,42 @@
-import java.util.PriorityQueue;
+import java.util.*;
 
-class OptimalMergePatterns {
+public class OptimalMergePatterns {
+    public static int optimalMerge(int[] files, int n) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
 
-    public static int mergeCost(int[] files) {
-        int cost = 0;
-
-        // Create a min-heap (PriorityQueue) to store the sizes of files
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-
-        // Add all the file sizes to the min-heap
-        for (int file : files) {
-            minHeap.add(file);
+        for (int i = 0; i < n; i++) {
+            pq.add(files[i]);
         }
 
-        // Perform the merging until there is only one file left
-        while (minHeap.size() > 1) {
-            // Extract the two smallest files from the min-heap
-            int file1 = minHeap.poll();
-            int file2 = minHeap.poll();
+        int cost = 0;
 
-            // Calculate the cost of merging these two files
-            int mergeCost = file1 + file2;
-
-            // Add the mergeCost to the total cost
-            cost += mergeCost;
-
-            // Add the merged file size back to the min-heap
-            minHeap.add(mergeCost);
+        while (pq.size() > 1) {
+            int file1 = pq.poll();
+            int file2 = pq.poll();
+            int mergedFile = file1 + file2;
+            cost += mergedFile;
+            pq.add(mergedFile);
         }
 
         return cost;
     }
 
     public static void main(String[] args) {
-        int[] files = {10, 5, 20, 2, 4};
+        Scanner input = new Scanner(System.in);
 
-        int cost = mergeCost(files);
+        System.out.print("Enter the number of files: ");
+        int n = input.nextInt();
 
-        System.out.println("Optimal Merge Cost: " + cost);
+        int[] files = new int[n];
+
+        System.out.println("Enter the sizes of the files:");
+        for (int i = 0; i < n; i++) {
+            files[i] = input.nextInt();
+        }
+
+        int minCost = optimalMerge(files, n);
+        System.out.println("Minimum cost of merging is: " + minCost + " Comparisons");
+
+        input.close();
     }
 }

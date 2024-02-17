@@ -1,69 +1,73 @@
-import java.util.Arrays;
-import java.util.PriorityQueue;
+// Dijkstra's Algorithm in Java
+
+import java.util.Scanner;
 
 public class DijkstraAlgorithm {
 
-    static class Node implements Comparable<Node> {
-        int vertex;
-        int distance;
+  public static void dijkstra(int[][] graph, int source) {
+    int count = graph.length;
+    boolean[] visitedVertex = new boolean[count];
+    int[] distance = new int[count];
+    for (int i = 0; i < count; i++) {
+      visitedVertex[i] = false;
+      distance[i] = Integer.MAX_VALUE;
+    }
 
-        public Node(int vertex, int distance) {
-            this.vertex = vertex;
-            this.distance = distance;
+    // Distance of self loop is zero
+    distance[source] = 0;
+    for (int i = 0; i < count; i++) {
+      // Update the distance between neighbouring vertex and source vertex
+      int u = findMinDistance(distance, visitedVertex);
+      visitedVertex[u] = true;
+
+      // Update all the neighbouring vertex distances
+      for (int v = 0; v < count; v++) {
+        if (
+          !visitedVertex[v] &&
+          graph[u][v] != 0 &&
+          (distance[u] + graph[u][v] < distance[v])
+        ) {
+          distance[v] = distance[u] + graph[u][v];
         }
+      }
+    }
+    for (int i = 0; i < distance.length; i++) {
+      System.out.println(
+        String.format("Distance from %s to %s is %s", source, i, distance[i])
+      );
+    }
+  }
 
-        @Override
-        public int compareTo(Node other) {
-            return Integer.compare(this.distance, other.distance);
+  // Finding the minimum distance
+  private static int findMinDistance(int[] distance, boolean[] visitedVertex) {
+    int minDistance = Integer.MAX_VALUE;
+    int minDistanceVertex = -1;
+    for (int i = 0; i < distance.length; i++) {
+      if (!visitedVertex[i] && distance[i] < minDistance) {
+        minDistance = distance[i];
+        minDistanceVertex = i;
+      }
+    }
+    return minDistanceVertex;
+  }
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    System.out.println("Enter the number of vertices: ");
+    int vertices = sc.nextInt();
+    int graph[][] = new int[vertices][vertices];
+
+    System.out.println("Enter the adjacency matrix of the graph:");
+    for (int i = 0; i < vertices; i++) {
+        for (int j = 0; j < vertices; j++) {
+            graph[i][j] = sc.nextInt();
         }
     }
 
-    public static void dijkstra(int[][] graph, int source) {
-        int n = graph.length;
-        int[] distance = new int[n];
-        Arrays.fill(distance, Integer.MAX_VALUE);
-        distance[source] = 0;
+    System.out.print("Enter the source vertex: ");
+    int source = sc.nextInt();
+    sc.close();
 
-        PriorityQueue<Node> minHeap = new PriorityQueue<>();
-        minHeap.add(new Node(source, 0));
-
-        while (!minHeap.isEmpty()) {
-            Node currentNode = minHeap.poll();
-            int currentVertex = currentNode.vertex;
-
-            for (int neighbor = 0; neighbor < n; neighbor++) {
-                if (graph[currentVertex][neighbor] != 0) {
-                    int newDistance = distance[currentVertex] + graph[currentVertex][neighbor];
-                    if (newDistance < distance[neighbor]) {
-                        distance[neighbor] = newDistance;
-                        minHeap.add(new Node(neighbor, newDistance));
-                    }
-                }
-            }
-        }
-
-        // Print the distances from the source to all vertices
-        System.out.println("Shortest distances from source " + source + ":");
-        for (int i = 0; i < n; i++) {
-            System.out.println("To " + i + ": " + distance[i]);
-        }
-    }
-
-    public static void main(String[] args) {
-        // Example graph represented as an adjacency matrix
-        int[][] graph = {
-                {0, 4, 0, 0, 0, 0, 0, 8, 0},
-                {4, 0, 8, 0, 0, 0, 0, 11, 0},
-                {0, 8, 0, 7, 0, 4, 0, 0, 2},
-                {0, 0, 7, 0, 9, 14, 0, 0, 0},
-                {0, 0, 0, 9, 0, 10, 0, 0, 0},
-                {0, 0, 4, 14, 10, 0, 2, 0, 0},
-                {0, 0, 0, 0, 0, 2, 0, 1, 6},
-                {8, 11, 0, 0, 0, 0, 1, 0, 7},
-                {0, 0, 2, 0, 0, 0, 6, 7, 0}
-        };
-
-        int source = 0; // Source vertex
-        dijkstra(graph, source);
-    }
+    DijkstraAlgorithm.dijkstra(graph, source);
+  }
 }
