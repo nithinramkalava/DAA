@@ -51,9 +51,9 @@ public class JobSequencing {
             char id = sc.next().charAt(0);
             int deadline = sc.nextInt();
             int profit = sc.nextInt();
-            sc.close();
             jobs[i] = new Job(id, deadline, profit);
         }
+        sc.close();
         System.out.println("Job sequence:");
         printJobSequence(jobs);
     }
