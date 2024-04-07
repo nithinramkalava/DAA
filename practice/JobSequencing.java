@@ -44,13 +44,11 @@ public class JobSequencing {
         Arrays.fill(jobSequence, null);
 
         for (Job job : jobs) {
-            if(jobSequence[job.deadline - 1] == null) 
-                jobSequence[job.deadline - 1] = job;
-            else {
-                for(int i = job.deadline - 2; i > -1; i--)
-                    if (jobSequence[i] == null) 
-                        jobSequence[i] = job;
-            }
+            for(int i = job.deadline - 1; i > -1; i--)
+                if (jobSequence[i] == null) {
+                    jobSequence[i] = job;
+                    break;
+                } 
         }
 
         printJobSequence(jobSequence);
